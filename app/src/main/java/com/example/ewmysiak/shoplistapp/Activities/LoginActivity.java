@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.ewmysiak.shoplistapp.Helpers.DataBaseHelper;
+import com.example.ewmysiak.shoplistapp.Helpers.TinyDB;
 import com.example.ewmysiak.shoplistapp.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -36,14 +38,13 @@ public class LoginActivity extends AppCompatActivity {
 
     CallbackManager callbackManager;
     private FirebaseAuth mAuth;
-    private static String TAG = "dupa";
     private static int RC_SIGN_IN = 123;
+    DataBaseHelper dbHelper;
 
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        //updateUI(currentUser);
+
     }
 
     @Override
@@ -75,7 +76,8 @@ public class LoginActivity extends AppCompatActivity {
 
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                dbHelper = new DataBaseHelper(this);
+                dbHelper.setUserDatainLocalDB();
                 Intent intent = new Intent(this,MainActivity.class);
                 startActivity(intent);
                 // ...

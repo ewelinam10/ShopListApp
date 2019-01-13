@@ -8,10 +8,25 @@
     android:background="@android:color/darker_gray"
     tools:context=".Activities.AddingListActivity">
 
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/listName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@color/white">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name of your new list" />
+
+    </android.support.design.widget.TextInputLayout>
+
     <LinearLayout
         android:id="@+id/adding_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/listName"
         android:orientation="vertical">
 
     </LinearLayout>

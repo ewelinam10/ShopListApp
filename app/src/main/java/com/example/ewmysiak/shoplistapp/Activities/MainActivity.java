@@ -13,9 +13,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 
+import com.example.ewmysiak.shoplistapp.Helpers.DataBaseHelper;
 import com.example.ewmysiak.shoplistapp.Objects.Product;
 import com.example.ewmysiak.shoplistapp.Objects.ShopList;
 import com.example.ewmysiak.shoplistapp.R;
@@ -49,10 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private ShopListAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
-    private FirebaseUser user;
-
-    private static String userUID = "userUID";
-    private static String ShopList= "ShopList";
+    DataBaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +66,16 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        db = FirebaseFirestore.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        dbHelper = new DataBaseHelper(this);
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                findViewById(R.id.productList).getParent()
+                        .requestDisallowInterceptTouchEvent(false);
+                return false;
+            }
+        });
     }
 
     public void goToAddingList(View view){
@@ -76,13 +84,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getList() {
-        Query query = db.collection(ShopList).whereEqualTo(userUID,user.getUid());
-
-        FirestoreRecyclerOptions<ShopList> response = new FirestoreRecyclerOptions.Builder<ShopList>()
-                .setQuery(query, ShopList.class)
-                .build();
-
-        adapter = new ShopListAdapter(response);
+        adapter = new ShopListAdapter(dbHelper.getLists(),this);
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
     }
@@ -99,4 +101,8 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         adapter.stopListening();
     }
+
+
+
+
 }
